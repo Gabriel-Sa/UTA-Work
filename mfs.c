@@ -1,24 +1,3 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2016, 2017, 2020 Trevor Bakker
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
 // Name: Gabriel de Sa
 // ID: 1001676832
 
@@ -29,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -42,14 +22,26 @@
 
 #define MAX_NUM_ARGUMENTS 11 // Mav shell only supports five arguments
 
-void testCommand(char *token) {
-  // takes the first token and tests it against all acceptable commands
+char *findCommand(char *command) {
+  // A function that finds what directory a command belongs too.
+
+  return "/bin/";
+}
+
+char *testCommand(char *token[MAX_NUM_ARGUMENTS]) {
+  // takes the first token and calls findCommand to find what dir it is
+  // located in. If found it will return the root, or else it will return NULL.
   // This allows us to simply call function to test if argument is valid.
-  if (!token) {
-    return;
-  } else if (strcmp(token, "Test")) {
-    printf("%s: Command not found.\n", token);
+  if (!token[0]) {
+    // this is to test whether or not the user entered without adding anything.
+    return NULL;
+  } else if (strcmp(token[0], "cd") == 0) {
+    // if the user inputs cd, it will indicate to main to run chdir.
+    return "cd";
+  } else {
+    return findCommand(token[0]);
   }
+  return NULL;
 }
 
 int main() {
@@ -95,8 +87,28 @@ int main() {
     }
 
     // Function that checks whether or not the command inputted is supported.
-    testCommand(token[0]);
-    pid_t id = fork();
+    char *result = testCommand(token);
+    if (!result) {
+      continue;
+    } else if (strcmp(result, "cd") == 0) {
+      chdir(token[1]);
+    } else {
+      char *dir = malloc(strlen(result) + strlen(token[0]) + 1);
+      strcpy(dir, result);
+      strcat(dir, token[0]);
+      pid_t pid = fork();
+      if (pid == 0) { // use execVP
+        int execValue = execl(dir, token[0], NULL, NULL, NULL, NULL, NULL, NULL,
+                              NULL, NULL);
+        if (execValue == -1) {
+          perror("Exec Failed\n");
+        }
+      } else {
+        int status;
+        wait(&status);
+      }
+      free(dir);
+    }
     free(working_root);
   }
   return 0;
