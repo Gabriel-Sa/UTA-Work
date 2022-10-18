@@ -1,0 +1,17 @@
+LOCAL_LIBRARIES = $(XAWLIB) $(XMULIB) $(XTOOLLIB) $(XLIB) \
+	          $(XEXTLIB) $(MATHLIB) 
+
+EXTRA_LIBRARIES = -lm -Llib -lKin 
+
+CDEBUGFLAGS = -g -ggdb
+
+PROG =	Kinematics
+
+SRCS = 	kin_fncs.c
+
+INCL = 
+
+OBJS = $(SRCS:.c=.o)
+
+ComplexProgramTarget($(PROG))
+
