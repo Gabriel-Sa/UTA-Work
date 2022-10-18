@@ -1,0 +1,1 @@
+ It cant be under the rock itself, because that sets solid on the ground

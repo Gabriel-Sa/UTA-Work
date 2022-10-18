@@ -1,0 +1,9 @@
+15
+100
+7
+5
+100
+7
+30
+a  // it will stop reading input here
+Test case: example given in the homework write-up.

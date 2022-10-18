@@ -1,0 +1,26 @@
+1
+7
+8
+AnimalCity
+FlowerCity
+SkyCity
+EarthCity
+FairyCity
+OceanCity
+ForestCity
+UndergroundCity
+AnimalCity OceanCity 8
+AnimalCity EarthCity 15
+AnimalCity FlowerCity 20
+AnimalCity UndergroundCity 12
+AnimalCity SkyCity 30
+AnimalCity ForestCity 20
+FlowerCity EarthCity 11
+SkyCity UndergroundCity 9
+SkyCity ForestCity 4
+EarthCity FairyCity 25
+EarthCity OceanCity 18
+FairyCity UndergroundCity 5
+FairyCity OceanCity 11
+FairyCity ForestCity 30
+-1 -1 -1
